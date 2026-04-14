@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPSILL – CUTO Assist</title>
+  <style>
+    :root {
+      --azul: #1a4f8a;
+      --azul-claro: #2d7dd2;
+      --azul-fundo: #eaf2ff;
+      --verde: #1a7f4b;
+      --vermelho: #c0392b;
+      --cinza: #f5f7fa;
+      --borda: #dde3ec;
+      --texto: #1e2a3a;
+      --sub: #5a6a7e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--cinza);
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--azul);
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    header .logo span { color: #7ec8f7; }
+    header p { font-size: 0.78rem; opacity: 0.75; margin-top: 1px; }
+
+    /* ── SETUP SCREEN ── */
+    #setup-screen {
+      max-width: 500px;
+      margin: 60px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+    #setup-screen h2 { color: var(--azul); margin-bottom: 8px; }
+    #setup-screen p { color: var(--sub); font-size: 0.9rem; margin-bottom: 24px; }
+    #setup-screen label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--texto); }
+    #setup-screen input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--borda);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    #setup-screen input:focus { border-color: var(--azul-claro); }
+    #setup-screen .hint {
+      font-size: 0.75rem;
+      color: var(--sub);
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+    #btn-entrar {
+      width: 100%;
+      background: var(--azul);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #btn-entrar:hover { background: var(--azul-claro); }
+    #erro-api { color: var(--vermelho); font-size: 0.82rem; margin-top: 10px; display: none; }
+
+    /* ── MAIN APP ── */
+    #app { display: none; max-width: 860px; margin: 0 auto; padding: 20px 16px 40px; }
+
+    /* ── CHAT AREA ── */
+    #chat-area {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 520px;
+    }
+    #messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 420px;
+      max-height: 560px;
+    }
+
+    /* ── MENSAGEM ── */
+    .msg { display: flex; gap: 10px; align-items: flex-start; }
+    .msg.user { flex-direction: row-reverse; }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .avatar.bot { background: var(--azul); color: #fff; }
+    .avatar.user { background: var(--azul-claro); color: #fff; }
+    .bubble {
+      max-width: 78%;
+      padding: 12px 15px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .msg.bot .bubble {
+      background: var(--azul-fundo);
+      border-top-left-radius: 2px;
+      color: var(--texto);
+    }
+    .msg.user .bubble {
+      background: var(--azul);
+      color: #fff;
+      border-top-right-radius: 2px;
+    }
+
+    /* highlight para pergunta gatilho */
+    .bubble .gatilho {
+      color: var(--vermelho);
+      font-weight: 700;
+      display: block;
+      margin: 6px 0 2px;
+    }
+
+    /* ── TYPING ── */
+    .typing-dots { display: flex; gap: 4px; padding: 14px 16px; align-items: center; }
+    .typing-dots span {
+      width: 8px; height: 8px;
+      background: var(--azul-claro);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    /* ── INPUT BAR ── */
+    #input-bar {
+      display: flex;
+      gap: 10px;
+      padding: 14px 16px;
+      border-top: 1.5px solid var(--borda);
+      background: #fafbfd;
+      align-items: flex-end;
+    }
+    #user-input {
+      flex: 1;
+      border: 1.5px solid var(--borda);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      resize: none;
+      min-height: 42px;
+      max-height: 120px;
+      outline: none;
+      font-family: inherit;
+      transition: border 0.2s;
+    }
+    #user-input:focus { border-color: var(--azul-claro); }
+    #btn-send {
+      background: var(--azul);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    #btn-send:hover { background: var(--azul-claro); }
+    #btn-send:disabled { background: #aab8cc; cursor: not-allowed; }
+
+    /* ── ATALHOS ── */
+    #shortcuts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .shortcut-btn {
+      background: #fff;
+      border: 1.5px solid var(--azul-claro);
+      color: var(--azul);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .shortcut-btn:hover { background: var(--azul); color: #fff; }
+
+    /* ── BOTÃO LIMPAR ── */
+    #btn-nova {
+      float: right;
+      background: none;
+      border: 1.5px solid var(--borda);
+      color: var(--sub);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: all 0.15s;
+    }
+    #btn-nova:hover { border-color: var(--vermelho); color: var(--vermelho); }
+
+    /* ── RODAPÉ ── */
+    footer { text-align: center; color: var(--sub); font-size: 0.72rem; margin-top: 28px; }
+
+    @media (max-width: 600px) {
+      #setup-screen { margin: 20px 12px; padding: 24px 18px; }
+      .bubble { max-width: 90%; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">UP<span>SILL</span></div>
+    <p>Assistente interno · Clínica CUTO</p>
+  </div>
+</header>
+
+<!-- TELA DE CONFIGURAÇÃO -->
+<div id="setup-screen">
+  <h2>🔑 Configurar API Key</h2>
+  <p>Para usar o UPSILL, insira sua chave da API Anthropic. Ela é salva apenas neste navegador.</p>
+  <label for="api-key-input">Chave da API (começa com <code>sk-ant-...</code>)</label>
+  <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" />
+  <div class="hint">Sua chave fica salva localmente e não é enviada a nenhum servidor externo além da API Anthropic.</div>
+  <button id="btn-entrar" onclick="salvarKey()">Entrar no UPSILL →</button>
+  <div id="erro-api">❌ Por favor, insira uma chave válida (começa com sk-ant-).</div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="app">
+  <button id="btn-nova" onclick="novoAtendimento()">+ Novo atendimento</button>
+  <div id="chat-area">
+    <div id="messages"></div>
+  </div>
+  <div id="shortcuts">
+    <span style="font-size:0.78rem;color:var(--sub);align-self:center;">Atalhos:</span>
+    <button class="shortcut-btn" onclick="atalho('resumo')">📋 Resumo</button>
+    <button class="shortcut-btn" onclick="atalho('encerramento')">✅ Encerramento</button>
+    <button class="shortcut-btn" onclick="atalho('fim')">🔚 Fim</button>
+  </div>
+  <div id="input-bar">
+    <textarea id="user-input" placeholder="Digite nome, idade, sexo e exame(s)... ex: Maria, 42 anos, feminino, US Mamas" rows="1" onkeydown="teclaEnter(event)" oninput="autoResize(this)"></textarea>
+    <button id="btn-send" onclick="enviar()">Enviar</button>
+  </div>
+</div>
+
+<footer>UPSILL v1.0 · Uso interno CUTO · Não compartilhe a chave API</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DADOS OFICIAIS EMBUTIDOS (lidos das planilhas do projeto)
+// ═══════════════════════════════════════════════════════════
+const CUTO_DATA_URL = 'cuto_data.json';
+let CUTO = null;
+
+async function carregarDados() {
+  try {
+    const r = await fetch(CUTO_DATA_URL);
+    CUTO = await r.json();
+  } catch(e) {
+    console.warn('cuto_data.json não encontrado, usando dados embutidos');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SYSTEM PROMPT COMPLETO DO CUTO ASSIST
+// ═══════════════════════════════════════════════════════════
+function buildSystemPrompt() {
+  const upsellJson = CUTO ? JSON.stringify(CUTO.upsell) : '[]';
+  const valoresJson = CUTO ? JSON.stringify(CUTO.valores) : '[]';
+  const conveniosJson = CUTO ? JSON.stringify(CUTO.convenios) : '[]';
+
+  return `Você é o CUTO Assist 2026 — agente interno da Clínica de Ultrassonografia Toledo (CUTO).
+Você interage EXCLUSIVAMENTE com colaboradoras internas. NUNCA responda como se fosse para o paciente.
+
+═══ REGRAS ABSOLUTAS ═══
+1. Seja técnico, direto e objetivo. Sem "Ok", "Perfeito", "Certo" como respostas de transição.
+2. Use APENAS os dados abaixo. Nunca invente valores, exames ou scripts.
+3. Resposta segue SEMPRE esta sequência fixa:
+   BLOCO 1 → Valor do exame
+   BLOCO 2 → Possibilidades de UPSELL (máx 5, excluir upsells que sejam pacotes)
+   BLOCO 3 → Pacotes relacionados (se houver)
+   CHECKLIST DE ATENDIMENTO (sempre ao final)
+
+═══ DADOS OFICIAIS DE VALORES ═══
+${valoresJson}
+
+Convênios disponíveis: ${conveniosJson}
+- Se convênio não informado → exibir apenas valor PARTICULAR
+- Se convênio informado mas não cadastrado → usar coluna CONVENIOSS com mensagem: ⚠️ O plano "[nome]" não consta entre os convênios com parceria oficial. Será aplicado o desconto padrão para convênios não credenciados.
+- Sempre mostrar percentual de desconto: ex: SINAM: R$ 263,50 (desconto de 15%)
+
+═══ DADOS OFICIAIS DE UPSELL ═══
+${upsellJson}
+
+Regras de UPSELL:
+- Exibir no BLOCO 2 apenas upsells que NÃO sejam pacotes. Pacotes vão só no Bloco 3.
+- Filtrar por sexo e faixa etária conforme campo "restricao"
+- Máximo 5 upsells por exame
+- Pergunta gatilho: exibir em vermelho/negrito, ANTES do script
+- Se campo gatilho for "DIRETO" ou "SCRIPT DIRETO": exibir apenas o script, sem pergunta gatilho
+- Formato obrigatório para cada upsell:
+  📌 [Nome do exame adicional]
+  🔴 Pergunta gatilho: [texto literal]
+  Script: [texto literal]
+
+- Para exames obstétricos (Gestação Inicial): perguntar IG em semanas antes de mostrar upsell
+
+═══ CHECKLIST PADRÃO ═══
+Sempre exibir ao final de TODA resposta, atualizado:
+CHECKLIST DE ATENDIMENTO
+✅ ou ❌ 1. Cumprimento e apresentação
+✅ ou ❌ 2. Dados do paciente (nome, data nasc., CPF)
+✅ ou ❌ 3. Exame(s) confirmado(s)
+✅ ou ❌ 4. Convênio verificado
+✅ ou ❌ 5. Upsell apresentado
+✅ ou ❌ 6. Folder explicativo oferecido
+✅ ou ❌ 7. Valor informado
+✅ ou ❌ 8. Pagamento / agendamento
+
+Itens marcados ✅ NÃO voltam a ❌. Atualizar dinamicamente conforme o atendimento avança.
+
+═══ COMANDOS ESPECIAIS ═══
+- "resumo" → exibir resumo do atendimento em 10 campos estruturados
+- "encerramento" ou "fim" → exibir bloco final de encerramento com tudo que foi feito/recusado e valor total confirmado
+
+═══ APÓS ACEITE/RECUSA DE UPSELL ═══
+Após colaboradora confirmar aceite ou recusa:
+- Exibir APENAS: valores dos exames confirmados + total + checklist atualizado
+- PROIBIDO: repetir upsells, scripts ou pacotes já apresentados
+
+═══ MÚLTIPLOS EXAMES ═══
+Se 2+ exames informados juntos:
+- Processar cada exame individualmente (valores + upsell + pacotes)
+- Não somar valores automaticamente antes de upsell decidido
+- Evitar duplicar upsells que se repetem
+
+Responda sempre em português brasileiro.`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// GERENCIAMENTO DE ESTADO
+// ═══════════════════════════════════════════════════════════
+let historico = [];
+let esperando = false;
+let apiKey = '';
+
+function salvarKey() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k.startsWith('sk-ant-') && !k.startsWith('sk-')) {
+    document.getElementById('erro-api').style.display = 'block';
+    return;
+  }
+  apiKey = k;
+  localStorage.setItem('cuto_api_key', k);
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  iniciar();
+}
+
+function iniciar() {
+  carregarDados().then(() => {
+    addMsg('bot', '👋 Olá! Sou o CUTO Assist.\n\nInforme os dados do atendimento:\n📝 Nome · Idade · Sexo · Exame(s) · Convênio (se houver)\n\nExemplo: _"Maria, 42 anos, feminino, US Mamas, convênio SINAM"_');
+  });
+}
+
+function novoAtendimento() {
+  if (!confirm('Iniciar novo atendimento? O histórico atual será apagado.')) return;
+  historico = [];
+  document.getElementById('messages').innerHTML = '';
+  addMsg('bot', '🔄 Novo atendimento iniciado.\n\nInforme os dados do paciente:');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHAT UI
+// ═══════════════════════════════════════════════════════════
+function addMsg(tipo, texto) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${tipo}`;
+
+  const av = document.createElement('div');
+  av.className = `avatar ${tipo}`;
+  av.textContent = tipo === 'bot' ? '🩺' : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  // Formatar texto
+  bubble.innerHTML = formatarTexto(texto);
+
+  div.appendChild(av);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function formatarTexto(txt) {
+  // Escapar HTML
+  let s = txt
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+
+  // Negrito **texto**
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Itálico _texto_
+  s = s.replace(/_(.*?)_/g, '<em>$1</em>');
+  // Pergunta gatilho em vermelho
+  s = s.replace(/(🔴 Pergunta gatilho:.*)/g, '<span class="gatilho">$1</span>');
+  // Quebras de linha
+  s = s.replace(/\n/g, '<br>');
+
+  return s;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typing-indicator';
+  div.innerHTML = `
+    <div class="avatar bot">🩺</div>
+    <div class="bubble" style="padding:10px 14px;">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ENVIO PARA API (com retry automático para erro de sobrecarga)
+// ═══════════════════════════════════════════════════════════
+async function chamarAPI(maxTentativas = 4) {
+  const payload = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2000,
+    system: buildSystemPrompt(),
+    messages: historico
+  };
+
+  for (let tentativa = 1; tentativa <= maxTentativas; tentativa++) {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    // Sobrecarga (529) ou erro de servidor (500/503): aguardar e tentar de novo
+    if (resp.status === 529 || resp.status === 500 || resp.status === 503) {
+      if (tentativa < maxTentativas) {
+        const espera = tentativa * 4000; // 4s, 8s, 12s
+        await new Promise(r => setTimeout(r, espera));
+        continue; // próxima tentativa
+      } else {
+        return { erro: 'O sistema está temporariamente sobrecarregado. Aguarde alguns segundos e tente enviar novamente.' };
+      }
+    }
+
+    const data = await resp.json();
+
+    if (data.error) {
+      // Erro de autenticação: não adianta tentar de novo
+      if (data.error.type === 'authentication_error') {
+        return { erro: '🔑 Chave de API inválida. Clique em "Sair" e verifique sua chave.' };
+      }
+      // Sobrecarga vinda no corpo da resposta
+      if (data.error.type === 'overloaded_error') {
+        if (tentativa < maxTentativas) {
+          const espera = tentativa * 4000;
+          await new Promise(r => setTimeout(r, espera));
+          continue;
+        }
+        return { erro: 'O sistema está temporariamente sobrecarregado. Aguarde alguns segundos e tente enviar novamente.' };
+      }
+      return { erro: data.error.message };
+    }
+
+    return { resposta: data.content[0].text };
+  }
+}
+
+async function enviar() {
+  if (esperando) return;
+  const input = document.getElementById('user-input');
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  addMsg('user', texto);
+  historico.push({ role: 'user', content: texto });
+
+  esperando = true;
+  document.getElementById('btn-send').disabled = true;
+  showTyping();
+
+  try {
+    const resultado = await chamarAPI();
+    removeTyping();
+
+    if (resultado.erro) {
+      addMsg('bot', `⚠️ ${resultado.erro}`);
+      historico.pop();
+    } else {
+      addMsg('bot', resultado.resposta);
+      historico.push({ role: 'assistant', content: resultado.resposta });
+    }
+  } catch(e) {
+    removeTyping();
+    addMsg('bot', '⚠️ Falha de conexão. Verifique sua internet e tente novamente.');
+    historico.pop();
+  }
+
+  esperando = false;
+  document.getElementById('btn-send').disabled = false;
+  document.getElementById('user-input').focus();
+}
+
+function atalho(cmd) {
+  document.getElementById('user-input').value = cmd;
+  enviar();
+}
+
+function teclaEnter(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    enviar();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// ═══════════════════════════════════════════════════════════
+// INICIALIZAÇÃO
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('cuto_api_key');
+  if (saved) {
+    apiKey = saved;
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    iniciar();
+  }
+});
+</script>
+</body>
+</html>
