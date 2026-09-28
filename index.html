@@ -259,13 +259,13 @@
 
 <!-- TELA DE CONFIGURAÇÃO -->
 <div id="setup-screen">
-  <h2>🔑 Configurar API Key</h2>
-  <p>Para usar o UPSILL, insira sua chave da API Anthropic. Ela é salva apenas neste navegador.</p>
-  <label for="api-key-input">Chave da API (começa com <code>sk-ant-...</code>)</label>
-  <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" />
-  <div class="hint">Sua chave fica salva localmente e não é enviada a nenhum servidor externo além da API Anthropic.</div>
+  <h2>🔑 Código da clínica</h2>
+  <p>Para usar o UPSILL, digite o código da clínica. Ele fica salvo neste navegador e só precisa ser digitado uma vez.</p>
+  <label for="api-key-input">Código da clínica</label>
+  <input type="password" id="api-key-input" placeholder="Digite o código" autocomplete="off" />
+  <div class="hint">Não sabe o código? Peça ao Dr. Adriel.</div>
   <button id="btn-entrar" onclick="salvarKey()">Entrar no UPSILL →</button>
-  <div id="erro-api">❌ Por favor, insira uma chave válida (começa com sk-ant-).</div>
+  <div id="erro-api">❌ Código inválido. Confira e digite novamente.</div>
 </div>
 
 <!-- APP PRINCIPAL -->
@@ -286,7 +286,7 @@
   </div>
 </div>
 
-<footer>UPSILL v1.0 · Uso interno CUTO · Não compartilhe a chave API</footer>
+<footer>UPSILL v1.1 · Uso interno CUTO · Não compartilhe o código da clínica</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -472,12 +472,12 @@ let apiKey = '';
 
 function salvarKey() {
   const k = document.getElementById('api-key-input').value.trim();
-  if (!k.startsWith('sk-ant-') && !k.startsWith('sk-')) {
+  if (!k) {
     document.getElementById('erro-api').style.display = 'block';
     return;
   }
   apiKey = k;
-  localStorage.setItem('cuto_api_key', k);
+  localStorage.setItem('cuto_access_code', k);
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   iniciar();
@@ -569,16 +569,24 @@ async function chamarAPI(maxTentativas = 4) {
   };
 
   for (let tentativa = 1; tentativa <= maxTentativas; tentativa++) {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('/.netlify/functions/claude', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'x-cuto-code': apiKey
       },
       body: JSON.stringify(payload)
     });
+
+    // Código da clínica inválido ou trocado: pedir de novo
+    if (resp.status === 401) {
+      localStorage.removeItem('cuto_access_code');
+      apiKey = '';
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('setup-screen').style.display = 'block';
+      document.getElementById('erro-api').style.display = 'block';
+      return { erro: '🔑 Código da clínica inválido ou alterado. Digite o código novamente.' };
+    }
 
     // Sobrecarga (529) ou erro de servidor (500/503): aguardar e tentar de novo
     if (resp.status === 529 || resp.status === 500 || resp.status === 503) {
@@ -596,7 +604,7 @@ async function chamarAPI(maxTentativas = 4) {
     if (data.error) {
       // Erro de autenticação: não adianta tentar de novo
       if (data.error.type === 'authentication_error') {
-        return { erro: '🔑 Chave de API inválida. Clique em "Sair" e verifique sua chave.' };
+        return { erro: '⚠️ Problema na configuração do servidor. Avise o Dr. Adriel.' };
       }
       // Sobrecarga vinda no corpo da resposta
       if (data.error.type === 'overloaded_error') {
@@ -672,7 +680,8 @@ function autoResize(el) {
 // INICIALIZAÇÃO
 // ═══════════════════════════════════════════════════════════
 window.addEventListener('load', () => {
-  const saved = localStorage.getItem('cuto_api_key');
+  localStorage.removeItem('cuto_api_key'); // apaga a chave antiga deste navegador
+  const saved = localStorage.getItem('cuto_access_code');
   if (saved) {
     apiKey = saved;
     document.getElementById('setup-screen').style.display = 'none';
