@@ -286,7 +286,7 @@
   </div>
 </div>
 
-<footer>UPSILL v1.1 · Uso interno CUTO · Não compartilhe o código da clínica</footer>
+<footer>UPSILL v1.2 · Uso interno CUTO · Não compartilhe o código da clínica</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -311,6 +311,7 @@ function buildSystemPrompt() {
   const upsellJson = CUTO ? JSON.stringify(CUTO.upsell) : '[]';
   const valoresJson = CUTO ? JSON.stringify(CUTO.valores) : '[]';
   const conveniosJson = CUTO ? JSON.stringify(CUTO.convenios) : '[]';
+  const pacotesJson = CUTO && CUTO.pacotes ? JSON.stringify(CUTO.pacotes) : '[]';
 
   return `Você é o CUTO Assist 2026 — agente corporativo interno da Clínica de Ultrassonografia Toledo (CUTO).
 Você interage EXCLUSIVAMENTE com colaboradoras internas da clínica. NUNCA responda como se fosse para o paciente. É terminantemente proibido interagir ou responder a pacientes.
@@ -369,7 +370,13 @@ Script: [texto literal do script]
 A pergunta gatilho deve estar SEMPRE em parágrafo próprio, antes do script, nunca embutida no meio do texto.
 
 ═══ BLOCO 3 — PACOTES RELACIONADOS ═══
-- Exibir apenas pacotes nos quais o exame consta literalmente.
+${pacotesJson}
+
+- Exibir apenas pacotes nos quais o exame consta literalmente (compare o exame do atendimento com o campo "item_tabela" de cada exame do pacote).
+- Para cada pacote aplicável, exibir: nome do pacote; lista de exames; brinde; "De R$ [soma_avulsa] por R$ [valor_pacote]"; forma de pagamento. No Programa Saúde Articular, exibir as opções com seus valores.
+- Pacotes valem SOMENTE para particular. Se o atendimento for por convênio, exibir o pacote com o aviso: "Pacote exclusivo para pagamento particular."
+- Se o brinde for a consulta com a cirurgiã vascular e a unidade for Cascavel, avisar: "A consulta com a cirurgiã vascular é realizada em Toledo-PR."
+- Nunca recalcular, arredondar ou alterar os valores dos pacotes.
 - Se exame não localizado → acionar Descoberta Assistida com até 5 opções aproximadas enumeradas.
 - Se nenhum pacote aplicável → exibir: "Não há pacotes disponíveis para este atendimento."
 

@@ -1,9 +1,9 @@
 {
  "versao": {
-  "numero": "2026.1",
+  "numero": "2026.2",
   "data": "2026-09-28",
   "fonte": "Tabela de Valores e Convênios, aba REAJ 26 (arquivo TOLEDO_dez_2025.xlsx)",
-  "observacao": "Valores particulares 2026 e 13 convênios com desconto. Valem para Toledo e Cascavel. Ecocardio fetal e pediátrico têm desconto próprio, diferente do percentual do cabeçalho (intencional). Aba Amor Saúde desconsiderada."
+  "observacao": "Valores particulares 2026 e 13 convênios com desconto. Valem para Toledo e Cascavel. Ecocardio fetal e pediátrico têm desconto próprio, diferente do percentual do cabeçalho (intencional). Aba Amor Saúde desconsiderada. Bloco de pacotes incluído (7 pacotes/programas, preços 2026, sem data de validade, só particular, Toledo e Cascavel)."
  },
  "descontos": {
   "UMUPREV": 0.2,
@@ -885,6 +885,322 @@
    "CONFORPLAN": 344.25,
    "PAX PRIMAVERA": 344.25,
    "SINDICATOS": 344.25
+  }
+ ],
+ "pacotes": [
+  {
+   "numero": 1,
+   "nome": "Pacote Saúde da Mulher – Essencial (3 exames)",
+   "exames": [
+    {
+     "exame": "US de Mamas",
+     "item_tabela": "US DE MAMAS",
+     "quantidade": 1,
+     "valor": 235
+    },
+    {
+     "exame": "US de Regiões Axilares",
+     "item_tabela": "US DE ÓRGÃOS E ESTRUTURAS SUPERFICIAIS (axilas, parede abdominal; inguinal, músculo etc)",
+     "quantidade": 1,
+     "valor": 225
+    },
+    {
+     "exame": "US Transvaginal com Doppler",
+     "item_tabela": "US TRANSVAGINAL COM DOPPLER",
+     "quantidade": 1,
+     "valor": 220
+    }
+   ],
+   "soma_avulsa": 680,
+   "brinde": "US de Regiões Axilares (valor descontado do total)",
+   "valor_pacote": 455,
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Entrada de 20% do valor do pacote (dinheiro ou Pix) e o restante em até 6x sem juros.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos."
+  },
+  {
+   "numero": 2,
+   "nome": "Pacote Saúde da Mulher – Completo (5 exames)",
+   "exames": [
+    {
+     "exame": "US de Mamas",
+     "item_tabela": "US DE MAMAS",
+     "quantidade": 1,
+     "valor": 235
+    },
+    {
+     "exame": "US de Regiões Axilares",
+     "item_tabela": "US DE ÓRGÃOS E ESTRUTURAS SUPERFICIAIS (axilas, parede abdominal; inguinal, músculo etc)",
+     "quantidade": 1,
+     "valor": 225
+    },
+    {
+     "exame": "US Transvaginal com Doppler",
+     "item_tabela": "US TRANSVAGINAL COM DOPPLER",
+     "quantidade": 1,
+     "valor": 220
+    },
+    {
+     "exame": "US de Tireoide com Doppler",
+     "item_tabela": "US DE TIREÓIDE COM DOPPLER",
+     "quantidade": 1,
+     "valor": 295
+    },
+    {
+     "exame": "US de Abdômen Total",
+     "item_tabela": "US DE ABDOMEN TOTAL",
+     "quantidade": 1,
+     "valor": 260
+    }
+   ],
+   "soma_avulsa": 1235,
+   "brinde": "US Transvaginal com Doppler (valor descontado do total)",
+   "valor_pacote": 1015,
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Entrada de 20% do valor do pacote (dinheiro ou Pix) e o restante em até 6x sem juros.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos."
+  },
+  {
+   "numero": 3,
+   "nome": "Pacote Saúde da Mulher – Premium (7 exames)",
+   "exames": [
+    {
+     "exame": "US de Mamas",
+     "item_tabela": "US DE MAMAS",
+     "quantidade": 1,
+     "valor": 235
+    },
+    {
+     "exame": "US de Regiões Axilares",
+     "item_tabela": "US DE ÓRGÃOS E ESTRUTURAS SUPERFICIAIS (axilas, parede abdominal; inguinal, músculo etc)",
+     "quantidade": 1,
+     "valor": 225
+    },
+    {
+     "exame": "US Transvaginal com Doppler",
+     "item_tabela": "US TRANSVAGINAL COM DOPPLER",
+     "quantidade": 1,
+     "valor": 220
+    },
+    {
+     "exame": "US de Tireoide com Doppler",
+     "item_tabela": "US DE TIREÓIDE COM DOPPLER",
+     "quantidade": 1,
+     "valor": 295
+    },
+    {
+     "exame": "US de Abdômen Total",
+     "item_tabela": "US DE ABDOMEN TOTAL",
+     "quantidade": 1,
+     "valor": 260
+    },
+    {
+     "exame": "Doppler Venoso dos Membros Inferiores - Bilateral",
+     "item_tabela": "DOPPLER COLORIDO VENOSO DE MEMBRO - (CADA) - UNILATERAL",
+     "quantidade": 2,
+     "valor": 570
+    }
+   ],
+   "soma_avulsa": 1805,
+   "brinde": "A paciente escolhe UM: consulta clínica com médica cirurgiã vascular (valor de referência R$ 400,00) OU 1 Pacote Saúde da Mulher – Essencial para presentear outra mulher",
+   "valor_pacote": 1805,
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Entrada de 20% do valor do pacote (dinheiro ou Pix) e o restante em até 6x sem juros.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos.",
+   "observacao_brinde": "A consulta com a cirurgiã vascular é realizada em Toledo-PR, inclusive para pacientes da unidade Cascavel."
+  },
+  {
+   "numero": 4,
+   "nome": "Pacote Check-up 50+ Feminino",
+   "exames": [
+    {
+     "exame": "US de Mamas",
+     "item_tabela": "US DE MAMAS",
+     "quantidade": 1,
+     "valor": 235
+    },
+    {
+     "exame": "US de Regiões Axilares",
+     "item_tabela": "US DE ÓRGÃOS E ESTRUTURAS SUPERFICIAIS (axilas, parede abdominal; inguinal, músculo etc)",
+     "quantidade": 1,
+     "valor": 225
+    },
+    {
+     "exame": "US de Tireoide com Doppler",
+     "item_tabela": "US DE TIREÓIDE COM DOPPLER",
+     "quantidade": 1,
+     "valor": 295
+    },
+    {
+     "exame": "Doppler de Carótidas e Vertebrais",
+     "item_tabela": "DOPPLER DE CARÓTIDAS E VERTEBRAIS",
+     "quantidade": 1,
+     "valor": 310
+    },
+    {
+     "exame": "Ecocardiograma Adulto",
+     "item_tabela": "ECOCARDIO ADULTO (acima de 14 anos)",
+     "quantidade": 1,
+     "valor": 405
+    },
+    {
+     "exame": "US de Abdômen Total",
+     "item_tabela": "US DE ABDOMEN TOTAL",
+     "quantidade": 1,
+     "valor": 260
+    },
+    {
+     "exame": "Doppler Venoso dos Membros Inferiores - Bilateral",
+     "item_tabela": "DOPPLER COLORIDO VENOSO DE MEMBRO - (CADA) - UNILATERAL",
+     "quantidade": 2,
+     "valor": 570
+    }
+   ],
+   "soma_avulsa": 2300,
+   "brinde": "Doppler Venoso dos Membros Inferiores - Bilateral (valor descontado do total)",
+   "valor_pacote": 1730,
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Entrada de 20% do valor do pacote (dinheiro ou Pix) e o restante em até 6x sem juros.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos."
+  },
+  {
+   "numero": 5,
+   "nome": "Pacote Check-up Masculino",
+   "exames": [
+    {
+     "exame": "Doppler de Carótidas e Vertebrais",
+     "item_tabela": "DOPPLER DE CARÓTIDAS E VERTEBRAIS",
+     "quantidade": 1,
+     "valor": 310
+    },
+    {
+     "exame": "Ecocardiograma Adulto",
+     "item_tabela": "ECOCARDIO ADULTO (acima de 14 anos)",
+     "quantidade": 1,
+     "valor": 405
+    },
+    {
+     "exame": "Doppler de Aorta e Artérias Ilíacas",
+     "item_tabela": "DOPPLER DE AORTA E ARTÉRIAS ILÍACAS",
+     "quantidade": 1,
+     "valor": 310
+    },
+    {
+     "exame": "US de Abdômen Total",
+     "item_tabela": "US DE ABDOMEN TOTAL",
+     "quantidade": 1,
+     "valor": 260
+    },
+    {
+     "exame": "US de Próstata (via abdominal)",
+     "item_tabela": "US DE PRÓSTATA (VIA ABDOMINAL)",
+     "quantidade": 1,
+     "valor": 225
+    },
+    {
+     "exame": "Doppler Venoso dos Membros Inferiores - Bilateral",
+     "item_tabela": "DOPPLER COLORIDO VENOSO DE MEMBRO - (CADA) - UNILATERAL",
+     "quantidade": 2,
+     "valor": 570
+    }
+   ],
+   "soma_avulsa": 2080,
+   "brinde": "Doppler Venoso dos Membros Inferiores - Bilateral (valor descontado do total)",
+   "valor_pacote": 1510,
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Entrada de 20% do valor do pacote (dinheiro ou Pix) e o restante em até 6x sem juros.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos."
+  },
+  {
+   "numero": 6,
+   "nome": "Pacote Saúde das Pernas – Doppler dos Membros Inferiores (4 exames)",
+   "exames": [
+    {
+     "exame": "Doppler Venoso dos Membros Inferiores - Bilateral",
+     "item_tabela": "DOPPLER COLORIDO VENOSO DE MEMBRO - (CADA) - UNILATERAL",
+     "quantidade": 2,
+     "valor": 570
+    },
+    {
+     "exame": "Doppler Arterial dos Membros Inferiores - Bilateral",
+     "item_tabela": "DOPPLER COLORIDO ARTERIAL DE MEMBRO (CADA)- UNILATERAL",
+     "quantidade": 2,
+     "valor": 620
+    }
+   ],
+   "soma_avulsa": 1190,
+   "brinde": "Consulta clínica com médica cirurgiã vascular (valor de referência R$ 400,00)",
+   "valor_pacote": 1190,
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Entrada de 20% do valor do pacote (dinheiro ou Pix) e o restante em até 6x sem juros.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos.",
+   "observacao_brinde": "A consulta com a cirurgiã vascular é realizada em Toledo-PR, inclusive para pacientes da unidade Cascavel."
+  },
+  {
+   "numero": 7,
+   "nome": "Programa Saúde Articular / Medicina do Esporte",
+   "exames": [
+    {
+     "exame": "US Articular",
+     "item_tabela": "US ARTICULAÇÃO (ombro cotovelo punho mão quadril, Joelho tornozelo calcâneo pé)",
+     "valor_unitario": 225
+    }
+   ],
+   "opcoes": [
+    {
+     "opcao": "1 articulação (unilateral)",
+     "desconto": 0.2,
+     "valor_pacote": 180.0
+    },
+    {
+     "opcao": "Bilateral (mesma articulação dos dois lados, ou articulação para onde a dor se estende)",
+     "desconto": 0.25,
+     "valor_pacote": 337.5
+    },
+    {
+     "opcao": "3 ou mais articulações",
+     "desconto": 0.3,
+     "valor_pacote": "R$ 157,50 por articulação"
+    }
+   ],
+   "publico": "Somente particular (não se aplica desconto de convênio sobre o pacote)",
+   "unidades": [
+    "Toledo",
+    "Cascavel"
+   ],
+   "validade": "Sem data de validade",
+   "pagamento": "Descontos válidos somente para pagamento em dinheiro ou Pix.",
+   "observacao": "Cada pacote tem protocolo e tempo de agenda específicos."
   }
  ],
  "upsell": [
