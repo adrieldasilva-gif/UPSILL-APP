@@ -89,7 +89,7 @@
     #erro-api { color: var(--vermelho); font-size: 0.82rem; margin-top: 10px; display: none; }
 
     /* ── MAIN APP ── */
-    #app { display: none; max-width: 860px; margin: 0 auto; padding: 20px 16px 40px; }
+    #app { display: none; max-width: 1600px; width: 96vw; margin: 0 auto; padding: 12px 16px 16px; }
 
     /* ── CHAT AREA ── */
     #chat-area {
@@ -99,17 +99,17 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      min-height: 520px;
+      min-height: 0;
     }
     #messages {
-      flex: 1;
+      flex: 0 0 auto;
       padding: 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      min-height: 420px;
-      max-height: 560px;
+      height: calc(100vh - 250px);
+      min-height: 400px;
     }
 
     /* ── MENSAGEM ── */
@@ -125,7 +125,7 @@
     .avatar.bot { background: var(--azul); color: #fff; }
     .avatar.user { background: var(--azul-claro); color: #fff; }
     .bubble {
-      max-width: 78%;
+      max-width: 92%;
       padding: 12px 15px;
       border-radius: 14px;
       font-size: 0.9rem;
@@ -286,7 +286,7 @@
   </div>
 </div>
 
-<footer>UPSILL v1.2 · Uso interno CUTO · Não compartilhe o código da clínica</footer>
+<footer>UPSILL v1.3 · Uso interno CUTO · Não compartilhe o código da clínica</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -374,7 +374,7 @@ ${pacotesJson}
 
 - Exibir apenas pacotes nos quais o exame consta literalmente (compare o exame do atendimento com o campo "item_tabela" de cada exame do pacote).
 - Para cada pacote aplicável, exibir: nome do pacote; lista de exames; brinde; "De R$ [soma_avulsa] por R$ [valor_pacote]"; forma de pagamento. No Programa Saúde Articular, exibir as opções com seus valores.
-- Pacotes valem SOMENTE para particular. Se o atendimento for por convênio, exibir o pacote com o aviso: "Pacote exclusivo para pagamento particular."
+- Pacotes valem SOMENTE para particular. Exibir o aviso "Pacote exclusivo para pagamento particular." APENAS quando o atendimento for por convênio; em atendimento particular, não exibir esse aviso.
 - Se o brinde for a consulta com a cirurgiã vascular e a unidade for Cascavel, avisar: "A consulta com a cirurgiã vascular é realizada em Toledo-PR."
 - Nunca recalcular, arredondar ou alterar os valores dos pacotes.
 - Se exame não localizado → acionar Descoberta Assistida com até 5 opções aproximadas enumeradas.
@@ -534,6 +534,7 @@ function formatarTexto(txt) {
     .replace(/>/g,'&gt;');
 
   // Negrito **texto**
+  s = s.replace(/^#{1,3} (.+)$/gm, '<strong style="font-size:1.05em">$1</strong>');
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   // Itálico _texto_
   s = s.replace(/_(.*?)_/g, '<em>$1</em>');
